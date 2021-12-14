@@ -48,12 +48,16 @@ def qubo(Q, cst, sorted_dict=False):
 
     indexQBit_f = cst.i_f
 
+    
     alpha = cst.alpha_f()
     alpha_l = alpha[0]
     alpha_m = alpha[1]
 
     m_f = cst.m_f
     d = cst.d_f()
+
+    if d == 0:
+        return None
 
     nb_m = math.ceil(math.log2(d)) + 1
     frac_value = d - math.floor(d)

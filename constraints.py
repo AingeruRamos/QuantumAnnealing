@@ -86,11 +86,10 @@ def d_7():
     d = 0
     p = _data_.aux.PArray[_data_.aux.selectedP]
     if p in _data_.inf.PW[_data_.aux.selectedW]:
-        for t in range(0, _data_.cnt.T):
+        for t in range(_data_.cnt.T):
             if p in _data_.inf.PT[t]: d += 1
 
-    if d != 0: return d
-    else: return 1
+    return d
 #########################
 
 cst_list = []

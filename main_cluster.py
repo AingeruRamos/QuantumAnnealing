@@ -4,7 +4,7 @@ from constraints import createCST, cst_list
 from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
 import debug as dbug
 import time
-#from dwave.system import DWaveSampler, EmbeddingComposite
+import tools as tls
 
 print("Cargando Datos", end='')
 dtm.chargeData()
@@ -19,7 +19,7 @@ print("\nGenerando Q")
 Q = {}
 
 start_time = time.time()
-
+"""
 #Función Objetivo
 print("\nFunción Objetivo")
 for t in range(0, _dt_.cnt.T):
@@ -49,13 +49,6 @@ for d in range(_dt_.cnt.D):
         qubo(Q, cst_list[1])
 
 dtm.restartAux()
-
-#Restriccion 3
-dbug.setAuxInfo(_dt_.cnt.W, 3)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[2])
 
 #Restriccion 4
 dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 4)
@@ -90,7 +83,11 @@ for w in range(_dt_.cnt.W):
 
 dtm.restartAux()
 
+tls.printRAMUsage()
+Q = {}
+"""
 #Restriccion 7
+counter = 1
 dbug.setAuxInfo(_dt_.cnt.P * _dt_.cnt.W, 7)
 for p in range(_dt_.cnt.P):
     _dt_.aux.selectedP = p
@@ -98,9 +95,31 @@ for p in range(_dt_.cnt.P):
         _dt_.aux.selectedW = w
         dbug.printAuxInfo()
         qubo(Q, cst_list[6])
+        if counter == 60:
+            counter = 1
+            print()
+            tls.printRAMUsage()
+            Q = {}
+        else:
+            counter += 1
 
 dtm.restartAux()
-
+"""
+#Restriccion 3
+counter = 1
+dbug.setAuxInfo(_dt_.cnt.W, 3)
+for w in range(_dt_.cnt.W):
+    _dt_.aux.selectedW = w
+    dbug.printAuxInfo()
+    qubo(Q, cst_list[2])
+    if counter == 5:
+        counter = 1
+        print()
+        tls.printRAMUsage()
+        Q = {}
+    else:
+        counter += 1
+"""
 total_time = time.time()-start_time
 
 hour = total_time // 3600
@@ -110,7 +129,3 @@ rest = total_time - (3600*hour + 60*min)
 seg = rest
 
 print(f"{hour} horas, {min} minutos, {seg} segundos")
-
-#sampler = EmbeddingComposite(DWaveSampler())
-#sampleset = sampler.sample.qubo(Q, num_reads=10, chain_strength=10)
-#print(sampleset)

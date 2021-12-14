@@ -1,6 +1,2 @@
-dict  = {1:1, 2:2}
-
-for key, value in dict.items():
-    print(value, end='-')
-    value += 3
-    print(value)
+for i in [1, 5, 67, 190]:
+    print(i)
