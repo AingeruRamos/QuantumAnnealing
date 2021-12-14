@@ -2,7 +2,6 @@ import dataManager as dtm
 from dataContainer import _data_ as _dt_
 from constraints import createCST, cst_list
 from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
-import saveManager as svm
 import debug as dbug
 import time
 #from dwave.system import DWaveSampler, EmbeddingComposite
@@ -29,14 +28,14 @@ for t in range(0, _dt_.cnt.T):
         _dt_.aux.selectedW = w
         ht = _dt_.inf.HT[_dt_.aux.selectedT]
         index = _dt_.aux.selectedT * _dt_.cnt.W + _dt_.aux.selectedW
-        addToQ(Q, (index, index), -1*ht, sorted_dict=True)
+        addToQ(Q, (index, index), -1*ht)
 
 #Restriccion 1
 dbug.setAuxInfo(_dt_.cnt.T, 1)
 for t in range(_dt_.cnt.T):
     _dt_.aux.selectedT = t
     dbug.printAuxInfo()
-    qubo(Q, cst_list[0], sorted_dict=True)
+    qubo(Q, cst_list[0])
 
 dtm.restartAux()
 
@@ -47,9 +46,16 @@ for d in range(_dt_.cnt.D):
     for w in range(_dt_.cnt.W):
         _dt_.aux.selectedW = w
         dbug.printAuxInfo()
-        qubo(Q, cst_list[1], sorted_dict=True)
+        qubo(Q, cst_list[1])
 
 dtm.restartAux()
+
+#Restriccion 3
+dbug.setAuxInfo(_dt_.cnt.W, 3)
+for w in range(_dt_.cnt.W):
+    _dt_.aux.selectedW = w
+    dbug.printAuxInfo()
+    qubo(Q, cst_list[2])
 
 #Restriccion 4
 dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 4)
@@ -58,7 +64,7 @@ for w in range(_dt_.cnt.W):
     for s in range(_dt_.cnt.S):
         _dt_.aux.selectedS = s
         dbug.printAuxInfo()
-        qubo(Q, cst_list[3], sorted_dict=True)
+        qubo(Q, cst_list[3])
 
 dtm.restartAux()
 
@@ -69,7 +75,7 @@ for w in range(_dt_.cnt.W):
     for s in range(_dt_.cnt.S):
         _dt_.aux.selectedS = s
         dbug.printAuxInfo()
-        qubo(Q, cst_list[4], sorted_dict=True)
+        qubo(Q, cst_list[4])
 
 dtm.restartAux()
 
@@ -80,7 +86,7 @@ for w in range(_dt_.cnt.W):
     for s in range(_dt_.cnt.S):
         _dt_.aux.selectedS = s
         dbug.printAuxInfo()
-        qubo(Q, cst_list[5], sorted_dict=True)
+        qubo(Q, cst_list[5])
 
 dtm.restartAux()
 
@@ -91,32 +97,9 @@ for p in range(_dt_.cnt.P):
     for w in range(_dt_.cnt.W):
         _dt_.aux.selectedW = w
         dbug.printAuxInfo()
-        qubo(Q, cst_list[6], sorted_dict=True)
+        qubo(Q, cst_list[6])
 
 dtm.restartAux()
-
-svm.saveQ(Q)
-Q = {}
-
-#Restriccion 3
-counter = 1
-dbug.setAuxInfo(_dt_.cnt.W, 3)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[2], sorted_dict=True)
-    if counter == 7:
-        print()
-        counter = 0
-        svm.saveQ(Q)
-        Q = {}
-    counter += 1
-
-if counter != 1:
-    svm.saveQ(Q)
-    Q = {}
-
-svm.makeUnion()
 
 total_time = time.time()-start_time
 

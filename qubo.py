@@ -28,17 +28,23 @@ def setLagrangeFactor(l_f):
 def getLagrangeFactor():
     return lagrangeFactor
 
-def addToQ(Q, key, value):
-    dir_id = key[0]
-    if not dir_id in Q:
-        Q[dir_id] = {}
-    
-    if not key[1] in Q[dir_id]:
-        Q[dir_id][key[1]] = value
+def addToQ(Q, key, value, sorted=False):
+    if sorted:
+        dir_id = key[0]
+        if not dir_id in Q:
+            Q[dir_id] = {}
+        
+        if not key[1] in Q[dir_id]:
+            Q[dir_id][key[1]] = value
+        else:
+            Q[dir_id][key[1]] += value 
     else:
-        Q[dir_id][key[1]] += value  
+        if not key in Q:
+            Q[key] = value
+        else:
+            Q[key] += value
 
-def qubo(Q, cst):
+def qubo(Q, cst, sorted_dict=False):
 
     indexQBit_f = cst.i_f
 
@@ -60,7 +66,7 @@ def qubo(Q, cst):
         m_i = m_f(i)
         if m_i != 0:
             fi = (m_i**2)-2*d*m_i
-            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi)
+            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi, sorted_dict)
 
     for i in range(alpha_l, alpha_m): #qq
         m_i = m_f(i)
@@ -69,23 +75,23 @@ def qubo(Q, cst):
                 m_j = m_f(j)
                 if m_j != 0:
                     fij = 2*m_i*m_j
-                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij)
+                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij, sorted_dict)
 
     for i in range(alpha_l, alpha_m): #qa
         m_i = m_f(i)
         if m_i != 0:
             for k in range(nb_l, nb_m):
                 fi = m_i*(2**(k+1))
-                addToQ(Q, (indexQBit_f(i), offset+(k-nb_l)), l_f*fi)
+                addToQ(Q, (indexQBit_f(i), offset+(k-nb_l)), l_f*fi, sorted_dict)
 
     for k in range(nb_l, nb_m): #a
         fi = (2**(2*k))-d*(2**(k+1))
-        addToQ(Q, (offset+(k-nb_l), offset+(k-nb_l)), l_f*fi)
+        addToQ(Q, (offset+(k-nb_l), offset+(k-nb_l)), l_f*fi, sorted_dict)
 
     for k in range(nb_l, nb_m): #aa
         for t in range(k+1, nb_m):
             fi = 2**(k+t+1)
-            addToQ(Q, (offset+(k-nb_l), offset+(t-nb_l)), l_f*fi)
+            addToQ(Q, (offset+(k-nb_l), offset+(t-nb_l)), l_f*fi, sorted_dict)
 
     #Algo con el d^2
 
