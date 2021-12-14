@@ -1,9 +1,8 @@
 from dataContainer import _data_
 
 class CST:
-    def __init__(self, alpha_f, m_c, m_f, d_f, i_f):
+    def __init__(self, alpha_f, m_f, d_f, i_f):
         self.alpha_f = alpha_f
-        self.m_constant = m_c
         self.m_f = m_f
         self.d_f = d_f
         self.i_f = i_f
@@ -97,10 +96,10 @@ def d_7():
 cst_list = []
 
 def createCST():
-    cst_list.append(CST(alpha_1, False, m_1, d_1, indexQBitW))
-    cst_list.append(CST(alpha_2, False, m_2, d_2, indexQBitT))
-    cst_list.append(CST(alpha_3, True, m_3, d_3, indexQBitT))
-    cst_list.append(CST(alpha_4, False, m_4, d_4, indexQBitT))
-    cst_list.append(CST(alpha_5, False, m_5, d_5, indexQBitT))
-    cst_list.append(CST(alpha_6, False, m_6, d_6, indexQBitT))
-    cst_list.append(CST(alpha_7, False, m_7, d_7, indexQBitT))
+    cst_list.append(CST(alpha_1, m_1, d_1, indexQBitW))
+    cst_list.append(CST(alpha_2, m_2, d_2, indexQBitT))
+    cst_list.append(CST(alpha_3, m_3, d_3, indexQBitT))
+    cst_list.append(CST(alpha_4, m_4, d_4, indexQBitT))
+    cst_list.append(CST(alpha_5, m_5, d_5, indexQBitT))
+    cst_list.append(CST(alpha_6, m_6, d_6, indexQBitT))
+    cst_list.append(CST(alpha_7, m_7, d_7, indexQBitT))

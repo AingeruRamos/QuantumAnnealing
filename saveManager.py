@@ -4,6 +4,11 @@ from qubo import getAncillaryIndexOffset
 import debug as dbug
 from tools import readDoubleInBinaryFile, writeDoubleInBinaryFile
 
+def createEnviroment(dir_path):
+    os.mkdir(dir_path)
+    open(f"{dir_path}/keys", 'w').close()
+    open(f"{dir_path}/values", 'wb').close()
+
 def saveQ(Q):
     last_debug_len = 0
     debug_str = ""
@@ -15,41 +20,28 @@ def saveQ(Q):
 
         dir_path = "Q/{}".format(str(dir_name))
         if not os.path.isdir(dir_path):
-            os.mkdir(dir_path)
-            with open(f"{dir_path}/keys", 'w') as fd_key, open(f"{dir_path}/values", 'wb'):
-                fd_key.write('{ }')
+            createEnviroment(dir_path)
 
-        fd_key = open(f"{dir_path}/keys", 'r+')
-        fd_val = open(f"{dir_path}/values", 'r+b')
-
-        key_list = ast.literal_eval(fd_key.read())
-
-        for key, value in Q[dir_name].items():
+        with open(f"{dir_path}/keys", 'r+') as fd_key, open(f"{dir_path}/values", 'r+b') as fd_val:
             
-            value_index = 0
-            next_value = value
+            key_list = ast.literal_eval('{' + fd_key.read() + '}')
+            n_keys = len(key_list)
 
-            if not key in key_list:
-                key_list[key] = len(key_list)
-                value_index = key_list[key]
-            else:
-                value_index = key_list[key]
+            for key, value in Q[dir_name].items():
+                
+                value_index = 0
+
+                if not key in key_list:
+                    value_index = n_keys
+                    fd_key.write(f"{key}:{value_index},")
+                    n_keys += 1
+                else:
+                    value_index = key_list[key]
+                    fd_val.seek(8*value_index)
+                    value += readDoubleInBinaryFile(fd_val)
+
                 fd_val.seek(8*value_index)
-                next_value += readDoubleInBinaryFile(fd_val)
-
-            fd_val.seek(8*value_index)
-            writeDoubleInBinaryFile(fd_val, next_value)
-
-        fd_val.close()
-
-        fd_key.seek(0)
-        fd_key.write('{')
-        for key, value in key_list.items():
-            fd_key.write(f"{key}:{value},")
-        fd_key.seek(fd_key.tell()-1, os.SEEK_SET)
-        fd_key.write('}')
-        fd_key.truncate()
-        fd_key.close()
+                writeDoubleInBinaryFile(fd_val, value)
 
         debug_str = f"\rSaving Q: {dir_name}"
 
@@ -79,7 +71,7 @@ def makeUnion():
         
         key_list = {}
         with open(f"{dir_path}/keys") as fd_key:
-            key_list = ast.literal_eval(fd_key.read())
+            key_list = ast.literal_eval('{' + fd_key.read() + '}')
 
         with open(f"{dir_path}/values", 'rb') as fd_val:
             for key, value_index in key_list.items():

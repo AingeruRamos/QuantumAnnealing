@@ -1,7 +1,7 @@
 import dataManager as dtm
 from dataContainer import _data_ as _dt_
 from constraints import createCST, cst_list
-from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor
+from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
 import saveManager as svm
 import debug as dbug
 import time
@@ -27,12 +27,9 @@ for t in range(0, _dt_.cnt.T):
     _dt_.aux.selectedT = t
     for w in range(0, _dt_.cnt.W):
         _dt_.aux.selectedW = w
-        ht = _dt_.inf.H[_dt_.aux.selectedT]
+        ht = _dt_.inf.HT[_dt_.aux.selectedT]
         index = _dt_.aux.selectedT * _dt_.cnt.W + _dt_.aux.selectedW
-        Q[(index, index)] = -1*ht
-
-#Guardar esto de alguna forma
-"""
+        addToQ(Q, (index, index), -1*ht)
 
 #Restriccion 1
 dbug.setAuxInfo(_dt_.cnt.T, 1)
@@ -98,8 +95,8 @@ for p in range(_dt_.cnt.P):
 
 dtm.restartAux()
 
-svm.saveQ(Q)
-Q = {}
+#svm.saveQ(Q)
+#Q = {}
 
 #Restriccion 3
 counter = 1
@@ -111,16 +108,16 @@ for w in range(_dt_.cnt.W):
     if counter == 7:
         print()
         counter = 0
-        svm.saveQ(Q)
+        #svm.saveQ(Q)
         Q = {}
     counter += 1
 
 if counter != 1:
-    svm.saveQ(Q)
+    #svm.saveQ(Q)
     Q = {}
 
-svm.makeUnion()
-
+#svm.makeUnion()
+"""
 total_time = time.time()-start_time
 
 hour = total_time // 3600

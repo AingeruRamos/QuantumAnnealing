@@ -57,13 +57,13 @@ def chargeHAInf(w_sheet):
     for row in w_sheet.iter_rows(min_row=2, min_col=16, max_col=16):
         _data_.inf.HA.append(row[0].value)
 
-def chargeHSInf(w_sheet): #???
-    n_w = w_sheet.max_row-1
-    _data_.inf.HS = n_w*[40]
+def chargeHSInf(w_sheet):
+    for days in _data_.inf.SW:
+        _data_.inf.HS.append(8*days)
 
-def chargeSWInf(w_sheet): #!
-    n_w = w_sheet.max_row-1
-    _data_.inf.SW = n_w*[3]
+def chargeSWInf(w_sheet):
+    for row in w_sheet.iter_rows(min_row=2, min_col=7, max_col=7):
+        _data_.inf.SW.append(7-row[0].value)
 
 def chargePTInf(t_sheet):
     for row in t_sheet.iter_rows(min_row=2, min_col=6, max_col=6):
@@ -114,8 +114,9 @@ def chargeData():
     chargeJPInf(t_sheet)
 
     chargeHAInf(w_sheet)
-    chargeHSInf(w_sheet)
+
     chargeSWInf(w_sheet)
+    chargeHSInf(w_sheet)
 
     chargePTInf(t_sheet)
     chargePWInf(w_sheet)
