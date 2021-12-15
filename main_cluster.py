@@ -1,14 +1,14 @@
+import dimod
 import dataManager as dtm
 from dataContainer import _data_ as _dt_
-from constraints import createCST, cst_list
-from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
+import constraints as cst
+from qubo import setAncillaryIndexOffset, setLagrangeFactor, addToQ
 import debug as dbug
 import time
-import tools as tls
+import dimod
 
 print("Cargando Datos", end='')
 dtm.chargeData()
-createCST()
 setAncillaryIndexOffset(_dt_.cnt.T*_dt_.cnt.W)
 setLagrangeFactor(1)
 print("\rDatos Cargados")
@@ -16,7 +16,7 @@ print("\rDatos Cargados")
 dbug.printCNT()
 
 print("\nGenerando Q")
-Q = {}
+bqm_gen = dimod.BQM.from_qubo({})
 
 start_time = time.time()
 """
@@ -30,96 +30,17 @@ for t in range(0, _dt_.cnt.T):
         index = _dt_.aux.selectedT * _dt_.cnt.W + _dt_.aux.selectedW
         addToQ(Q, (index, index), -1*ht)
 
-#Restriccion 1
-dbug.setAuxInfo(_dt_.cnt.T, 1)
-for t in range(_dt_.cnt.T):
-    _dt_.aux.selectedT = t
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[0])
-
-dtm.restartAux()
-
-#Restriccion 2
-dbug.setAuxInfo(_dt_.cnt.D * _dt_.cnt.W, 2)
-for d in range(_dt_.cnt.D):
-    _dt_.aux.selectedD = d
-    for w in range(_dt_.cnt.W):
-        _dt_.aux.selectedW = w
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[1])
-
-dtm.restartAux()
-
-#Restriccion 4
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 4)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[3])
-
-dtm.restartAux()
-
-#Restriccion 5
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 5)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[4])
-
-dtm.restartAux()
-
-#Restriccion 6
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 6)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[5])
-
-dtm.restartAux()
-
-tls.printRAMUsage()
-Q = {}
+#Restricciones
+cst.addConstraint1(bqm_gen)
+cst.addConstraint2(bqm_gen)
+cst.addConstraint4(bqm_gen)
+cst.addConstraint5(bqm_gen)
+cst.addConstraint6(bqm_gen)
 """
-#Restriccion 7
-counter = 1
-dbug.setAuxInfo(_dt_.cnt.P * _dt_.cnt.W, 7)
-for p in range(_dt_.cnt.P):
-    _dt_.aux.selectedP = p
-    for w in range(_dt_.cnt.W):
-        _dt_.aux.selectedW = w
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[6])
-        if counter == 60:
-            counter = 1
-            print()
-            tls.printRAMUsage()
-            Q = {}
-        else:
-            counter += 1
+cst.addConstraint7(bqm_gen)
 
-dtm.restartAux()
-"""
-#Restriccion 3
-counter = 1
-dbug.setAuxInfo(_dt_.cnt.W, 3)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[2])
-    if counter == 5:
-        counter = 1
-        print()
-        tls.printRAMUsage()
-        Q = {}
-    else:
-        counter += 1
-"""
+#cst.addConstraint3(bqm_gen)
+
 total_time = time.time()-start_time
 
 hour = total_time // 3600

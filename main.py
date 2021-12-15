@@ -20,7 +20,7 @@ print("\nGenerando Q")
 Q = {}
 
 start_time = time.time()
-
+"""
 #Función Objetivo
 print("\nFunción Objetivo")
 for t in range(0, _dt_.cnt.T):
@@ -85,13 +85,11 @@ for w in range(_dt_.cnt.W):
 dtm.restartAux()
 
 #Restriccion 7
-dbug.setAuxInfo(_dt_.cnt.P * _dt_.cnt.W, 7)
-for p in range(_dt_.cnt.P):
-    _dt_.aux.selectedP = p
-    for w in range(_dt_.cnt.W):
-        _dt_.aux.selectedW = w
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[6], sorted_dict=True)
+dbug.setAuxInfo(_dt_.cnt.W, 7)
+for w in range(_dt_.cnt.W):
+    _dt_.aux.selectedW = w
+    dbug.printAuxInfo()
+    qubo(Q, cst_list[6], sorted_dict=True)
 
 dtm.restartAux()
 
@@ -117,7 +115,7 @@ if counter != 1:
     Q = {}
 
 svm.makeUnion()
-
+"""
 total_time = time.time()-start_time
 
 hour = total_time // 3600

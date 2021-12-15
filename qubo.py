@@ -44,20 +44,37 @@ def addToQ(Q, key, value, sorted=False):
         else:
             Q[key] += value
 
-def qubo(Q, cst, sorted_dict=False):
+def EquQUBO(Q, cst, sorted_dict=False):
+    indexQBit_f = cst.i_f
+
+    alpha = cst.alpha_f()
+    m_f = cst.m_f
+
+    l_f = getLagrangeFactor()
+
+    for i in alpha: #q
+        m_i = m_f(i)
+        if m_i != 0:
+            fi = m_i**2
+            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi, sorted_dict)
+
+    for index, i in enumerate(alpha): #qq
+        m_i = m_f(i)
+        if m_i != 0:
+            for j in alpha[index+1:]:
+                m_j = m_f(j)
+                if m_j != 0:
+                    fij = 2*m_i*m_j
+                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij, sorted_dict) 
+
+def IneQUBO(Q, cst, sorted_dict=False):
 
     indexQBit_f = cst.i_f
 
-    
     alpha = cst.alpha_f()
-    alpha_l = alpha[0]
-    alpha_m = alpha[1]
 
     m_f = cst.m_f
     d = cst.d_f()
-
-    if d == 0:
-        return None
 
     nb_m = math.ceil(math.log2(d)) + 1
     frac_value = d - math.floor(d)
@@ -66,22 +83,22 @@ def qubo(Q, cst, sorted_dict=False):
     offset = getAncillaryIndexOffset()
     l_f = getLagrangeFactor()
 
-    for i in range(alpha_l, alpha_m): #q
+    for i in alpha: #q
         m_i = m_f(i)
         if m_i != 0:
             fi = (m_i**2)-2*d*m_i
             addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi, sorted_dict)
 
-    for i in range(alpha_l, alpha_m): #qq
+    for index, i in enumerate(alpha): #qq
         m_i = m_f(i)
         if m_i != 0:
-            for j in range(i+1, alpha_m):
+            for j in alpha[index+1:]:
                 m_j = m_f(j)
                 if m_j != 0:
                     fij = 2*m_i*m_j
                     addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij, sorted_dict)
 
-    for i in range(alpha_l, alpha_m): #qa
+    for i in alpha: #qa
         m_i = m_f(i)
         if m_i != 0:
             for k in range(nb_l, nb_m):
@@ -100,3 +117,11 @@ def qubo(Q, cst, sorted_dict=False):
     #Algo con el d^2
 
     setAncillaryIndexOffset(offset+(nb_m-nb_l))
+
+def qubo(Q, cst, sorted_dict=False):
+    d = cst.d_f()
+
+    if d == 0:
+        EquQUBO(Q, cst, sorted_dict)
+    else:
+        IneQUBO(Q, cst, sorted_dict)

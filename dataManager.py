@@ -65,19 +65,30 @@ def chargeSWInf(w_sheet):
     for row in w_sheet.iter_rows(min_row=2, min_col=7, max_col=7):
         _data_.inf.SW.append(7-row[0].value)
 
-def chargePTInf(t_sheet):
+def chargePTW(t_sheet, w_sheet):
+    PT = []
     for row in t_sheet.iter_rows(min_row=2, min_col=6, max_col=6):
         str = re.sub(r'[\[\]]', '', row[0].value)
         str = re.sub(r' ', '', str)
         p_values = str.split(',')
-        _data_.inf.PT.append(p_values)
+        PT.append(p_values)
 
-def chargePWInf(w_sheet):
+    PW = []
     for row in w_sheet.iter_rows(min_row=2, min_col=15, max_col=15):
         str = re.sub(r'[\[\]\(\)]', '', row[0].value)
         str = re.sub(r' ', '', str)
         p_values = str.split(',')
-        _data_.inf.PW.append(p_values)
+        PW.append(p_values)
+
+    for pw in PW:
+        t_indexes = []
+        for index, pt in enumerate(PT):
+            pw_set = set(pw)
+            pt_set = set(pt)
+            pwt_set = pw_set.intersection(pt_set)
+            if len(pwt_set) == 0:
+                t_indexes.append(index)
+        _data_.inf.PWT.append(t_indexes)
 
 def initCNTValues(t_sheet, w_sheet):
 
@@ -86,22 +97,11 @@ def initCNTValues(t_sheet, w_sheet):
     _data_.cnt.D = len(_data_.inf.D)
     _data_.cnt.S = len(_data_.inf.S)
 
-    #P
-    for row in t_sheet.iter_rows(min_row=2, min_col=6, max_col=6):
-        str = re.sub(r'[\[\]]', '', row[0].value)
-        str = re.sub(r' ', '', str)
-        p_values = str.split(',')
-        for p in p_values:
-            if p not in _data_.aux.PArray:
-                _data_.cnt.P += 1
-                _data_.aux.PArray.append(p)
-
 def restartAux():
     _data_.aux.selectedW = -1
     _data_.aux.selectedT = -1
     _data_.aux.selectedS = -1
     _data_.aux.selectedD = -1
-    _data_.aux.selectedP = -1
 
 def chargeData():
 
@@ -118,8 +118,7 @@ def chargeData():
     chargeSWInf(w_sheet)
     chargeHSInf(w_sheet)
 
-    chargePTInf(t_sheet)
-    chargePWInf(w_sheet)
+    chargePTW(t_sheet, w_sheet)
 
     initCNTValues(t_sheet, w_sheet)
 

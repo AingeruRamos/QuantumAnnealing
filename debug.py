@@ -27,8 +27,8 @@ def printAuxInfo(msg=None):
     if res_counter > max_res_counter: print()
 
 def printCNT():
-    print("W: {}, T: {}, D: {}, S: {}, P: {}\nlagrangeFactor: {}, ancillaryOffset: {}"
+    print("W: {}, T: {}, D: {}, S: {}\nlagrangeFactor: {}, ancillaryOffset: {}"
                                                     .format(_data_.cnt.W, _data_.cnt.T, 
-                                                            _data_.cnt.D, _data_.cnt.S, 
-                                                            _data_.cnt.P, getLagrangeFactor(), 
+                                                            _data_.cnt.D, _data_.cnt.S,
+                                                            getLagrangeFactor(), 
                                                             getAncillaryIndexOffset()))

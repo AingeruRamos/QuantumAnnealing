@@ -4,7 +4,6 @@ class Constants:
         self.W = 0
         self.D = 0
         self.S = 0
-        self.P = 0
 
 class Auxiliary:
     def __init__(self):
@@ -12,8 +11,6 @@ class Auxiliary:
         self.selectedW = 0
         self.selectedD = 0
         self.selectedS = 0
-        self.selectedP = 0
-        self.PArray = []
 
 class Info:
     def __init__(self):
@@ -24,8 +21,7 @@ class Info:
         self.HS = []
         self.SW = []
         self.JP = []
-        self.PT = []
-        self.PW = []
+        self.PWT= []
 
 class Data:
     def __init__(self):
