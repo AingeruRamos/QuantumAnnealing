@@ -1,4 +1,3 @@
-import dimod
 import dataManager as dtm
 from dataContainer import _data_ as _dt_
 import problem as prb

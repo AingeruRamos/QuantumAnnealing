@@ -1,5 +1,5 @@
 from dataContainer import _data_
-from qubo.qubo_cluster import getLagrangeFactor, getAncillaryIndexOffset
+from qubo import getLagrangeFactor, getAncillaryIndexOffset
 
 res_counter = 0
 max_res_counter = 0

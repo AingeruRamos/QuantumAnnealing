@@ -28,23 +28,17 @@ def setLagrangeFactor(l_f):
 def getLagrangeFactor():
     return lagrangeFactor
 
-def addToQ(Q, key, value, sorted=False):
-    if sorted:
-        dir_id = key[0]
-        if not dir_id in Q:
-            Q[dir_id] = {}
+def addToQ(Q, key, value):
+    dir_id = key[0]
+    if not dir_id in Q:
+        Q[dir_id] = {}
         
-        if not key[1] in Q[dir_id]:
-            Q[dir_id][key[1]] = value
-        else:
-            Q[dir_id][key[1]] += value 
+    if not key[1] in Q[dir_id]:
+        Q[dir_id][key[1]] = value
     else:
-        if not key in Q:
-            Q[key] = value
-        else:
-            Q[key] += value
+        Q[dir_id][key[1]] += value 
 
-def EquQUBO(Q, cst, sorted_dict=False):
+def EquQUBO(Q, cst):
     indexQBit_f = cst.i_f
 
     alpha = cst.alpha_f()
@@ -56,7 +50,7 @@ def EquQUBO(Q, cst, sorted_dict=False):
         m_i = m_f(i)
         if m_i != 0:
             fi = m_i**2
-            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi, sorted_dict)
+            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi)
 
     for index, i in enumerate(alpha): #qq
         m_i = m_f(i)
@@ -65,9 +59,9 @@ def EquQUBO(Q, cst, sorted_dict=False):
                 m_j = m_f(j)
                 if m_j != 0:
                     fij = 2*m_i*m_j
-                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij, sorted_dict) 
+                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij) 
 
-def IneQUBO(Q, cst, sorted_dict=False):
+def IneQUBO(Q, cst):
 
     indexQBit_f = cst.i_f
 
@@ -87,7 +81,7 @@ def IneQUBO(Q, cst, sorted_dict=False):
         m_i = m_f(i)
         if m_i != 0:
             fi = (m_i**2)-2*d*m_i
-            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi, sorted_dict)
+            addToQ(Q, (indexQBit_f(i), indexQBit_f(i)), l_f*fi)
 
     for index, i in enumerate(alpha): #qq
         m_i = m_f(i)
@@ -96,32 +90,32 @@ def IneQUBO(Q, cst, sorted_dict=False):
                 m_j = m_f(j)
                 if m_j != 0:
                     fij = 2*m_i*m_j
-                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij, sorted_dict)
+                    addToQ(Q, (indexQBit_f(i), indexQBit_f(j)), l_f*fij)
 
     for i in alpha: #qa
         m_i = m_f(i)
         if m_i != 0:
             for k in range(nb_l, nb_m):
                 fi = m_i*(2**(k+1))
-                addToQ(Q, (indexQBit_f(i), offset+(k-nb_l)), l_f*fi, sorted_dict)
+                addToQ(Q, (indexQBit_f(i), offset+(k-nb_l)), l_f*fi)
 
     for k in range(nb_l, nb_m): #a
         fi = (2**(2*k))-d*(2**(k+1))
-        addToQ(Q, (offset+(k-nb_l), offset+(k-nb_l)), l_f*fi, sorted_dict)
+        addToQ(Q, (offset+(k-nb_l), offset+(k-nb_l)), l_f*fi)
 
     for k in range(nb_l, nb_m): #aa
         for t in range(k+1, nb_m):
             fi = 2**(k+t+1)
-            addToQ(Q, (offset+(k-nb_l), offset+(t-nb_l)), l_f*fi, sorted_dict)
+            addToQ(Q, (offset+(k-nb_l), offset+(t-nb_l)), l_f*fi)
 
     #Algo con el d^2
 
     setAncillaryIndexOffset(offset+(nb_m-nb_l))
 
-def qubo(Q, cst, sorted_dict=False):
+def qubo(Q, cst):
     d = cst.d_f()
 
     if d == 0:
-        EquQUBO(Q, cst, sorted_dict)
+        EquQUBO(Q, cst)
     else:
-        IneQUBO(Q, cst, sorted_dict)
+        IneQUBO(Q, cst)

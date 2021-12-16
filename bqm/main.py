@@ -1,15 +1,13 @@
 import dataManager as dtm
 from dataContainer import _data_ as _dt_
-from constraints import createCST, cst_list
-from qubo.qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
+import problem as prb
+from qubo import setAncillaryIndexOffset, setLagrangeFactor
 import saveManager as svm
 import debug as dbug
 import time
-#from dwave.system import DWaveSampler, EmbeddingComposite
 
 print("Cargando Datos", end='')
 dtm.chargeData()
-createCST()
 setAncillaryIndexOffset(_dt_.cnt.T*_dt_.cnt.W)
 setLagrangeFactor(1)
 print("\rDatos Cargados")
@@ -17,105 +15,28 @@ print("\rDatos Cargados")
 dbug.printCNT()
 
 print("\nGenerando Q")
-Q = {}
 
 start_time = time.time()
-"""
+
 #Función Objetivo
-print("\nFunción Objetivo")
-for t in range(0, _dt_.cnt.T):
-    _dt_.aux.selectedT = t
-    for w in range(0, _dt_.cnt.W):
-        _dt_.aux.selectedW = w
-        ht = _dt_.inf.HT[_dt_.aux.selectedT]
-        index = _dt_.aux.selectedT * _dt_.cnt.W + _dt_.aux.selectedW
-        addToQ(Q, (index, index), -1*ht, sorted_dict=True)
+Q = prb.createObjetiveFunction()
 
-#Restriccion 1
-dbug.setAuxInfo(_dt_.cnt.T, 1)
-for t in range(_dt_.cnt.T):
-    _dt_.aux.selectedT = t
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[0], sorted_dict=True)
-
-dtm.restartAux()
-
-#Restriccion 2
-dbug.setAuxInfo(_dt_.cnt.D * _dt_.cnt.W, 2)
-for d in range(_dt_.cnt.D):
-    _dt_.aux.selectedD = d
-    for w in range(_dt_.cnt.W):
-        _dt_.aux.selectedW = w
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[1], sorted_dict=True)
-
-dtm.restartAux()
-
-#Restriccion 4
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 4)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[3], sorted_dict=True)
-
-dtm.restartAux()
-
-#Restriccion 5
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 5)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[4], sorted_dict=True)
-
-dtm.restartAux()
-
-#Restriccion 6
-dbug.setAuxInfo(_dt_.cnt.W * _dt_.cnt.S, 6)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    for s in range(_dt_.cnt.S):
-        _dt_.aux.selectedS = s
-        dbug.printAuxInfo()
-        qubo(Q, cst_list[5], sorted_dict=True)
-
-dtm.restartAux()
-
-#Restriccion 7
-dbug.setAuxInfo(_dt_.cnt.W, 7)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[6], sorted_dict=True)
-
-dtm.restartAux()
+#Restricciones
+prb.addConstraint1(Q)
+prb.addConstraint2(Q)
+prb.addConstraint4(Q)
+prb.addConstraint5(Q)
+prb.addConstraint6(Q)
+prb.addConstraint7(Q)
 
 svm.saveQ(Q)
 Q = {}
 
-#Restriccion 3
-counter = 1
-dbug.setAuxInfo(_dt_.cnt.W, 3)
-for w in range(_dt_.cnt.W):
-    _dt_.aux.selectedW = w
-    dbug.printAuxInfo()
-    qubo(Q, cst_list[2], sorted_dict=True)
-    if counter == 7:
-        print()
-        counter = 0
-        svm.saveQ(Q)
-        Q = {}
-    counter += 1
+#prb.addConstraint3(Q)
 
-if counter != 1:
-    svm.saveQ(Q)
-    Q = {}
 
 svm.makeUnion()
-"""
+
 total_time = time.time()-start_time
 
 hour = total_time // 3600
@@ -125,7 +46,3 @@ rest = total_time - (3600*hour + 60*min)
 seg = rest
 
 print(f"{hour} horas, {min} minutos, {seg} segundos")
-
-#sampler = EmbeddingComposite(DWaveSampler())
-#sampleset = sampler.sample.qubo(Q, num_reads=10, chain_strength=10)
-#print(sampleset)
