@@ -1,6 +1,6 @@
 import os
 import ast
-from qubo import getAncillaryIndexOffset
+from qubo.qubo import getAncillaryIndexOffset
 import debug as dbug
 from tools import readDoubleInBinaryFile, writeDoubleInBinaryFile
 

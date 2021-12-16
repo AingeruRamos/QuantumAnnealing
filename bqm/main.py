@@ -1,7 +1,7 @@
 import dataManager as dtm
 from dataContainer import _data_ as _dt_
 from constraints import createCST, cst_list
-from qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
+from qubo.qubo import qubo, setAncillaryIndexOffset, setLagrangeFactor, addToQ
 import saveManager as svm
 import debug as dbug
 import time
