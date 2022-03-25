@@ -18,20 +18,27 @@ def alpha_1():
     return range(_data_.cnt.W)
 
 def m_1(w):
-    return 1
+    return _data_.inf.HT[_data_.aux.selectedT]
 
 def d_1():
-    return 1
+    return _data_.inf.HT[_data_.aux.selectedT]
 #########################
 def alpha_2():
     t_interval_start, t_interval_end = _data_.inf.D[_data_.aux.selectedD]
     return range(t_interval_start, t_interval_end+1)
 
 def m_2(t):
-    return 1
+    return _data_.inf.HT[t]
 
 def d_2():
-    return 1
+    t_interval_start, t_interval_end = _data_.inf.D[_data_.aux.selectedD]
+    
+    max_ht = -1
+    for t in range(t_interval_start, t_interval_end+1):
+        if _data_.inf.HT[t] > max_ht:
+            max_ht = _data_.inf.HT[t]
+
+    return max_ht
 #########################
 def alpha_3():
     return range(_data_.cnt.T)
@@ -67,10 +74,17 @@ def alpha_6():
     return range(t_interval_start, t_interval_end+1)
 
 def m_6(t):
-    return _data_.inf.JP[t]
+    return _data_.inf.JP[t]*_data_.inf.HT[t]
 
 def d_6():
-    return 1
+    t_interval_start, t_interval_end = _data_.inf.S[_data_.aux.selectedS]
+    
+    max_ht = -1
+    for t in range(t_interval_start, t_interval_end+1):
+        if _data_.inf.HT[t] > max_ht:
+            max_ht = _data_.inf.JP[t]*_data_.inf.HT[t]
+    
+    return max_ht
 #########################
 def alpha_7():
     return _data_.inf.PWT[_data_.aux.selectedW]

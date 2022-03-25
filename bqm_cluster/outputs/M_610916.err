@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "main.py", line 53, in <module>
+    prb.addConstraint6(bqm_gen, 10)
+  File "/pscratch/aramos/QuantumAnnealing/bqm_cluster/problem.py", line 88, in addConstraint6
+    qubo(bqm, cst_list[5])
+  File "/pscratch/aramos/QuantumAnnealing/bqm_cluster/qubo.py", line 105, in qubo
+    d = cst.d_f()
+  File "/pscratch/aramos/QuantumAnnealing/bqm_cluster/constraints.py", line 83, in d_6
+    for t in range(t_interval_start. t_interval_end+1):
+AttributeError: 'int' object has no attribute 't_interval_end'

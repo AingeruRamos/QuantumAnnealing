@@ -35,4 +35,5 @@ def convert_unit(size_in_bytes, unit):
 
 def printRAMUsage():
     m = psutil.virtual_memory().used
-    print(convert_unit(m, SIZE_UNIT.GB))
+    m = format(convert_unit(m, SIZE_UNIT.GB), '.2f')
+    print(f"{m} GB")

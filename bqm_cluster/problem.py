@@ -7,9 +7,9 @@ import dimod
 def createObjetiveFunction():
     bqm = dimod.BQM.from_qubo({})
 
-    for t in range(0, _data_.cnt.T):
+    for t in range(_data_.cnt.T):
         _data_.aux.selectedT = t
-        for w in range(0, _data_.cnt.W):
+        for w in range(_data_.cnt.W):
             _data_.aux.selectedW = w
             ht = _data_.inf.HT[_data_.aux.selectedT]
             index = _data_.aux.selectedT * _data_.cnt.W + _data_.aux.selectedW
@@ -17,19 +17,18 @@ def createObjetiveFunction():
 
     return bqm
 
-def addConstraint1(bqm):
+def addConstraint1(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.T, 1)
     for t in range(_data_.cnt.T):
         _data_.aux.selectedT = t
-        dbug.printAuxInfo()
         qubo(bqm, cst_list[0])
-
-    #bqm_c.scale(1.5)
+    
+    bqm_c.scale(lf)
     bqm.update(bqm_c)
 
-def addConstraint2(bqm):
+def addConstraint2(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.D * _data_.cnt.W, 2)
@@ -37,24 +36,22 @@ def addConstraint2(bqm):
         _data_.aux.selectedD = d
         for w in range(_data_.cnt.W):
             _data_.aux.selectedW = w
-            dbug.printAuxInfo()
             qubo(bqm, cst_list[1])
-
-    #bqm_c.scale(1.5)
+    
+    bqm_c.scale(lf)
     bqm.update(bqm_c)
 
-def addConstraint3(bqm):
+def addConstraint3(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.W, 3)
     for w in range(_data_.cnt.W):
         _data_.aux.selectedW = w
-        dbug.printAuxInfo()
         qubo(bqm, cst_list[2])
-        #bqm_c.scale(1.5)
+        bqm_c.scale(lf)
         bqm.update(bqm_c)
 
-def addConstraint4(bqm):
+def addConstraint4(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.W * _data_.cnt.S, 4)
@@ -62,13 +59,12 @@ def addConstraint4(bqm):
         _data_.aux.selectedW = w
         for s in range(_data_.cnt.S):
             _data_.aux.selectedS = s
-            dbug.printAuxInfo()
             qubo(bqm, cst_list[3])
-
-    #bqm_c.scale(1.5)
+    
+    bqm_c.scale(lf)
     bqm.update(bqm_c)
 
-def addConstraint5(bqm):
+def addConstraint5(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.W * _data_.cnt.S, 5)
@@ -76,13 +72,12 @@ def addConstraint5(bqm):
         _data_.aux.selectedW = w
         for s in range(_data_.cnt.S):
             _data_.aux.selectedS = s
-            dbug.printAuxInfo()
             qubo(bqm, cst_list[4])
-
-    #bqm_c.scale(1.5)
+    
+    bqm_c.scale(lf)
     bqm.update(bqm_c)
 
-def addConstraint6(bqm):
+def addConstraint6(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.W * _data_.cnt.S, 6)
@@ -90,19 +85,17 @@ def addConstraint6(bqm):
         _data_.aux.selectedW = w
         for s in range(_data_.cnt.S):
             _data_.aux.selectedS = s
-            dbug.printAuxInfo()
             qubo(bqm, cst_list[5])
 
-    #bqm_c.scale(1.5)
+    bqm_c.scale(lf)
     bqm.update(bqm_c)
 
-def addConstraint7(bqm):
+def addConstraint7(bqm, lf):
     bqm_c = dimod.BQM.from_qubo({})
 
     dbug.setAuxInfo(_data_.cnt.W, 7)
     for w in range(_data_.cnt.W):
         _data_.aux.selectedW = w
-        dbug.printAuxInfo()
         qubo(bqm, cst_list[6])
-        #bqm_c.scale(1.5)
+        bqm_c.scale(lf)
         bqm.update(bqm_c)

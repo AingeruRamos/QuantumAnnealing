@@ -103,10 +103,15 @@ def restartAux():
     _data_.aux.selectedS = -1
     _data_.aux.selectedD = -1
 
-def chargeData():
+def chargeData(id):
+    print(f"Cargando datos de jornadas/trabajadores {id}") 
+    
+    data_dir = '../data'
+    file_names = [f"{data_dir}/jornadas_{id}.xlsx", 
+                f"{data_dir}/trabajadores_{id}.xlsx"]
 
-    t_sheet = tls.chargeXLSXFile('../data/jornadas_11.xlsx')
-    w_sheet = tls.chargeXLSXFile('../data/trabajadores_11.xlsx')
+    t_sheet = tls.chargeXLSXFile(file_names[0])
+    w_sheet = tls.chargeXLSXFile(file_names[1])
     
     chargeHTInf(t_sheet)
     chargeDInf(t_sheet)

@@ -1,0 +1,28 @@
+/pscratch/aramos/QuantumAnnealing/bqm_cluster
+Executing the following command: pipenv run python3 main.py 14 600 in directory /home/aramos/scratch/QuantumAnnealing/bqm_cluster using the container /opt/ohpc/pub/containers/SGG.sif
+
+Cargando datos de jornadas/trabajadores 14
+Datos Cargados
+W: 8, T: 1567, D: 298, S: 53
+lagrangeFactor: 1, ancillaryOffset: 12536
+
+Generando Q
+Restriccion 1: OK
+0.49 GB
+Restriccion 2: OK
+0.49 GB
+Restriccion 4: OK
+0.50 GB
+Restriccion 5: OK
+0.50 GB
+Restriccion 6: OK
+0.50 GB
+Restriccion 7: OK
+0.54 GB
+Restriccion 3: OK
+0.79 GB
+Q generado
+Usando QPU
+Resultados recibidos
+Resultados escritos en json/14_600_1.json
+0 horas, 11 minutos, 4 segundos

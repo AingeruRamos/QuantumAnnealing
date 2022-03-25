@@ -1,0 +1,3 @@
+/pscratch/aramos/QuantumAnnealing/bqm_cluster
+Executing the following command: pipenv run python3 main.py in directory /home/aramos/scratch/QuantumAnnealing/bqm_cluster using the container /opt/ohpc/pub/containers/SGG.sif
+

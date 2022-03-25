@@ -1,7 +1,7 @@
 import math
 
 ancillaryIndexOffset = 0
-lagrangeFactor = 0
+lagrangeFactor = 1
 
 def getFixCommaLessBitIndex(frac_value):
     nl = 0
